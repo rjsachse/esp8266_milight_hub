@@ -21,6 +21,8 @@ $(function() {
 var UNIT_PARAMS = {
   minMireds: 153,
   maxMireds: 370,
+  minKelvin: 2000,
+  maxKelvin: 11000,
   maxBrightness: 255
 };
 
@@ -360,6 +362,89 @@ var UI_FIELDS = [ {
     tab: "tab-transitions"
   }
 ];
+
+//milight temperature & kelvin. 0 is coolest, 100 is warmest.
+//milight mireds. 153 is coolest, 370 is warmest.
+//iro colour picker. 2000 warmest, 11000 coolest
+var kelvin2Range = function (val, outMin, outMax){
+  return Math.round((val - 2000) * (outMax - outMin) / (11000 - 2000) + outMin);
+}
+
+var remapRange = function (val, inMin, inMax, outMin, outMax){
+  return Math.round((val - inMin) * (outMax - outMin) / (inMax - inMin) + outMin);
+}
+
+var huePickerWheel = new iro.ColorPicker("#huePickerWheel", {
+  // Set the size of the color picker
+  width: 320,
+  // Set the initial color to pure red
+  color: "#f00",
+  layout: [
+    { 
+      component: iro.ui.Wheel,
+      options: {
+        borderWidth: 1,
+        borderColor: "#000000",
+        wheelLightness: false,
+        wheelAngle: 360,
+        wheelDirection: 'anticlockwise'
+      }
+    },
+  ]
+});
+
+var huePickerSlider = new iro.ColorPicker("#huePickerSlider", {
+  // Set the size of the color picker
+  width: 320,
+  // Set the initial color to pure red
+  color: "#f00",
+  layout: [
+    { 
+      component: iro.ui.Slider,
+      options: {
+        borderWidth: 1,
+        borderColor: "#000000",
+        sliderType: 'hue'
+      }
+    },
+  ]
+});
+
+var kelvinPickerSlider = new iro.ColorPicker("#kelvinPickerSlider", {
+  // Set the size of the color picker
+  width: 320,
+  // Set the initial color to pure red
+  color: "#f00",
+  layout: [
+    { 
+      component: iro.ui.Slider,
+      options: {
+        borderWidth: 1,
+        borderColor: "#000000",
+        sliderType: 'kelvin',
+        minTemperature: UNIT_PARAMS.minKelvin,
+        maxTemperature: UNIT_PARAMS.maxKelvin
+      }
+    },
+  ]
+});
+
+var brightnessPickerSlider = new iro.ColorPicker("#brightnessPickerSlider", {
+  // Set the size of the color picker
+  width: 320,
+  // Set the initial color to pure red
+  color: "#f00",
+  layout: [
+    { 
+      component: iro.ui.Slider,
+      options: {
+        borderWidth: 1,
+        borderColor: "#000000",
+        sliderType: 'value'
+      }
+    },
+  ]
+});
 
 // TODO: sync this with GroupStateField.h
 var GROUP_STATE_KEYS = [
@@ -906,6 +991,7 @@ var handleCheckForUpdates = function() {
 };
 
 var handleStateUpdate = function(state) {
+  console.log(state);
   if (state.state) {
     // Set without firing an event
     $('input[name="status"]')
@@ -916,20 +1002,35 @@ var handleStateUpdate = function(state) {
   if (state.color) {
     // Browsers don't support HSV, but saturation from HSL doesn't match
     // saturation from bulb state.
-    var hsl = rgbToHsl(state.color.r, state.color.g, state.color.b);
-    var hsv = RGBtoHSV(state.color.r, state.color.g, state.color.b);
+    //var hsl = rgbToHsl(state.color.r, state.color.g, state.color.b);
+    //var hsv = RGBtoHSV(state.color.r, state.color.g, state.color.b);
 
-    $('input[name="saturation"]').slider('setValue', hsv.s*100);
-    updatePreviewColor(hsl.h*360,hsl.s*100,hsl.l*100);
+    //$('input[name="saturation"]').slider('setValue', hsv.s*100);
+    //updatePreviewColor(hsl.h*360,hsl.s*100,hsl.l*100);
+    huePickerWheel.color.rgb = {r: state.color.r, g: state.color.g, b: state.color.b};
+    huePickerSlider.color.rgb = {r: state.color.r, g: state.color.g, b: state.color.b};
+    if (!state.brightness) {
+      brightnessPickerSlider.color.hsv = { h: huePickerWheel.color.hsv.h, s: huePickerWheel.color.hsv.s, v: brightnessPickerSlider.color.hsv.v};
+    }
   }
   if (state.color_temp) {
     var scaledTemp
       = 100*(state.color_temp - UNIT_PARAMS.minMireds) / (UNIT_PARAMS.maxMireds - UNIT_PARAMS.minMireds);
-    $('input[name="temperature"]').slider('setValue', scaledTemp);
+    //$('input[name="temperature"]').slider('setValue', scaledTemp);
+    kelvinPickerSlider.color.kelvin = remapRange(scaledTemp, 0, 100, UNIT_PARAMS.maxKelvin, UNIT_PARAMS.minKelvin);
+    if (!state.brightness) {
+      brightnessPickerSlider.color.hsv = { h: kelvinPickerSlider.color.hsv.h, s: kelvinPickerSlider.color.hsv.s, v: brightnessPickerSlider.color.hsv.v};
+    }
   }
   if (state.brightness) {
     var scaledBrightness = state.brightness * (100 / UNIT_PARAMS.maxBrightness);
-    $('input[name="level"]').slider('setValue', scaledBrightness);
+    //$('input[name="level"]').slider('setValue', scaledBrightness);
+    if (state.bulb_mode == "color"){
+      brightnessPickerSlider.color.hsv = { h: huePickerWheel.color.hsv.h, s: huePickerWheel.color.hsv.s, v: scaledBrightness};
+    }
+    if (state.bulb_mode == "white"){
+      brightnessPickerSlider.color.hsv = { h: kelvinPickerSlider.color.hsv.h, s: kelvinPickerSlider.color.hsv.s, v: scaledBrightness};
+    }
   }
 };
 
@@ -1359,4 +1460,21 @@ $(function() {
         }
     });
   });
+});
+
+huePickerWheel.on('input:change', function(color) {
+  updateGroup({hue: color.hsv.h, saturation: color.hsv.s});
+});
+
+huePickerSlider.on('input:change', function(color) {
+  huePickerWheel.color.hsv = color.hsv;
+  updateGroup({hue: color.hsv.h});
+});
+
+brightnessPickerSlider.on('input:change', function(color) {
+  updateGroup({level: color.hsv.v});
+});
+
+kelvinPickerSlider.on('input:change', function(color) {11000 - 2000
+  updateGroup({temperature: remapRange(color.kelvin, 2000, 11000, 100, 0)});
 });
