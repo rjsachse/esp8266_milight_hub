@@ -18,43 +18,6 @@ label:not(.error) .error-info { display: none; }
 #sniffed-traffic { max-height: 50em; overflow-y: auto; }
 .dropdown label { display: inline-block; }
 .inline { display: inline-block; }
-.white-temp-picker {
-  height: 2em;
-  background: linear-gradient(to right,
-    rgb(166, 209, 255) 0%,
-    rgb(255, 255, 255) 50%,
-    rgb(255, 160, 0) 100%
-  );
-  display: inline-block;
-  padding: 3px 0;
-}
-.hue-picker {
-  height: 2em;
-  width: 100%;
-  display: block;
-}
-.hue-picker-inner {
-  height: 2em;
-  width: calc(100% - 3em);
-  display: inline-block;
-  cursor: pointer;
-  background: linear-gradient(to right,
-    rgb(255, 0, 0) 0%,
-    rgb(255, 255, 0) 16.6667%,
-    rgb(0, 255, 0) 33.3333%,
-    rgb(0, 255, 255) 50%,
-    rgb(0, 0, 255) 66.6667%,
-    rgb(255, 0, 255) 83.3333%,
-    rgb(255, 0, 0) 100%
-  );
-}
-.hue-value-display {
-  border: 1px solid #000;
-  margin-left: 0.5em;
-  width: 2em;
-  height: 2em;
-  display: inline-block;
-}
 .plus-minus-group {
   overflow: auto;
   width: 100%;

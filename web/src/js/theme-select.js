@@ -54,7 +54,7 @@ function supports_html5_storage(){
   } catch (e) {
     return false;
   }
-}
+};
 
 function newThemeLoaded() {
   var btnCssHeight = $("#btnHeight").css("height");
@@ -78,4 +78,4 @@ function newThemeLoaded() {
       times++;
     }
   }
-}
+};

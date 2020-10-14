@@ -376,9 +376,9 @@ var remapRange = function (val, inMin, inMax, outMin, outMax){
 
 var huePickerWheel = new iro.ColorPicker("#huePickerWheel", {
   // Set the size of the color picker
-  width: 320,
+  //width: 320,
   // Set the initial color to pure red
-  color: "#f00",
+  //color: "#000",
   layout: [
     { 
       component: iro.ui.Wheel,
@@ -395,9 +395,9 @@ var huePickerWheel = new iro.ColorPicker("#huePickerWheel", {
 
 var huePickerSlider = new iro.ColorPicker("#huePickerSlider", {
   // Set the size of the color picker
-  width: 320,
+  //width: 320,
   // Set the initial color to pure red
-  color: "#f00",
+  //color: "#f00",
   layout: [
     { 
       component: iro.ui.Slider,
@@ -412,9 +412,9 @@ var huePickerSlider = new iro.ColorPicker("#huePickerSlider", {
 
 var kelvinPickerSlider = new iro.ColorPicker("#kelvinPickerSlider", {
   // Set the size of the color picker
-  width: 320,
+  //width: 320,
   // Set the initial color to pure red
-  color: "#f00",
+  //color: "#f00",
   layout: [
     { 
       component: iro.ui.Slider,
@@ -431,9 +431,9 @@ var kelvinPickerSlider = new iro.ColorPicker("#kelvinPickerSlider", {
 
 var brightnessPickerSlider = new iro.ColorPicker("#brightnessPickerSlider", {
   // Set the size of the color picker
-  width: 320,
+  //width: 320,
   // Set the initial color to pure red
-  color: "#f00",
+  //color: "#f00",
   layout: [
     { 
       component: iro.ui.Slider,
@@ -657,6 +657,22 @@ var gatewayServerRow = function(deviceId, port, version) {
   return elmt;
 }
 
+function selectAlias(data) {
+  var name = $(data).html();
+  aliasesSelectize.setValue(name);
+}
+
+var refreshZoneButtons = function(group_id_aliases) {
+  var zoneButtons = $("#zoneButtons")
+    , sel = 'id="firstZoneBtn"';
+  zoneButtons.html("");
+  Object.entries(group_id_aliases).forEach(function(entry) {
+    var label = entry[0];
+    zoneButtons.append('<button ' + sel + ' type="button" class="btn btn-secondary" onclick="selectAlias(this)">' + label + '</button>');
+    sel = "";
+  });
+};
+
 var loadSettings = function() {
   $('select.select-init').selectpicker();
   if (location.hostname == "") {
@@ -755,6 +771,11 @@ var loadSettings = function() {
       });
     }
 
+    if (val.group_id_aliases) {
+      refreshZoneButtons(val.group_id_aliases);
+      aliasesSelectize.setValue(Object.keys(val.group_id_aliases)[0]);
+    }
+
     loadingSettings = false;
   });
 };
@@ -851,7 +872,7 @@ var saveDeviceAliases = function() {
       },
       {}
     );
-
+    refreshZoneButtons(deviceAliases);
     patchSettings({group_id_aliases: deviceAliases});
   }
 };
@@ -991,7 +1012,6 @@ var handleCheckForUpdates = function() {
 };
 
 var handleStateUpdate = function(state) {
-  console.log(state);
   if (state.state) {
     // Set without firing an event
     $('input[name="status"]')
@@ -1000,13 +1020,6 @@ var handleStateUpdate = function(state) {
       .bootstrapToggle();
   }
   if (state.color) {
-    // Browsers don't support HSV, but saturation from HSL doesn't match
-    // saturation from bulb state.
-    //var hsl = rgbToHsl(state.color.r, state.color.g, state.color.b);
-    //var hsv = RGBtoHSV(state.color.r, state.color.g, state.color.b);
-
-    //$('input[name="saturation"]').slider('setValue', hsv.s*100);
-    //updatePreviewColor(hsl.h*360,hsl.s*100,hsl.l*100);
     huePickerWheel.color.rgb = {r: state.color.r, g: state.color.g, b: state.color.b};
     huePickerSlider.color.rgb = {r: state.color.r, g: state.color.g, b: state.color.b};
     if (!state.brightness) {

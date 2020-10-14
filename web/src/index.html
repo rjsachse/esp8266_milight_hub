@@ -17,7 +17,6 @@
   <link href="css/style.css" rel="stylesheet" />
   <link href="data:image/x-icon;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAA/38NABD+CwD/jQsA9pUOABRu/wD/HQwA+gPrAP4MbAAZ8f8ACxb9AP4GkwCW/AoADYj+AP59CQD7FAkAC//nAJYK/QAQ/w4Acgv/AP71CwCSDP8A+AkYAP7rBAAN/+0A/xEcAP1rCwAM/okADf+HAI/7CgAL/5sADP95AA0U/wD4/gsADXr+ABAO/gDlC/8A+v0NAA3/EwB4Ef8A8wr7AP0IeAAN7P4Abf8LAAuJ/wCVDv8A+hcGACH+DgBz/wsA+g7/ABT+ZQAMCv0Aagn/AJT/DQD+EPsADP7sAOf/DAD/Dx0A/g2AAB4N/gB0/gwADZz/ABLu/wAM/BYA+wqMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYAAAAAAAAAAAAAAUsAAA+NwAAGzIAAAAAAAAAIj0AKhAAHh8AAAAAAAoAAAANAAAAABwAAAA/AAAzIAAAAAAAAAAAAAAmAgAAADsjAAAAAAAAAAASLwAAAAAAAAAAAAAAAAAAAAAAABMnNAAAAAAAAAAAAAArMDwVLREAAAAAAAAAAAAADDUdAAAAAAAAAAAAAAAAAAAAAAAAJDEAAAAAAAAAACU4AAAAKDYAAAAAAAAAAAAAFCEAAAcAAAA6AAAAAAEAAAAXAAAAAABACAAWLgAaAwAAAAAAAAALKQAAOQYAAA4EAAAAAAAAAAAAABkPAAAAAAAAAP5/AADmZwAA8k8AALvdAACf+QAAz/MAAP//AAAf+AAAH/gAAP//AADP8wAAn/kAALvdAADyTwAA5mcAAP5/AAA=" rel="icon" type="image/x-icon" />
 </head>
-
 <body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="js/theme-select.js" lang="text/javascript"></script>
@@ -28,7 +27,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
-  <script src="js/rgb2hsv.js" lang="text/javascript"></script>
   <script src="js/script.js" lang="text/javascript"></script>
 
   <nav class="navbar navbar-inverse">
@@ -73,10 +71,20 @@
   </nav>
 
   <div class="container" id="content">
+    <div class="row">
+      <div class="col-sm-9">
+        <div id="zoneButtons" class="btn-group" role="group" aria-label="Basic example">
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <button type="button" data-toggle="modal" data-target="#zones-modal" class="btn btn-secondary">Manage Zones</button>
+      </div>
+    </div>
+<!--     
     <div class="row" id="device-id-aliases-row">
       <div class="col-sm-3">
         <label for="deviceAliases" id="device-id-aliases">
-          Device Name
+          Zone Name
         </label>
         <select id="deviceAliases" placeholder="Create alias...">
         </select>
@@ -92,6 +100,39 @@
         </label>
         <select id="deviceId" placeholder="Enter hub ID">
         </select>
+      </div>
+
+      <div class="col-sm-4">
+        <label for="mode">Remote Type</label>
+        <div class="dropdown">
+          <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+            <label>Mode</label>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" id="mode">
+            <li data-value="rgbw">
+              <a href="#">RGBW</a>
+            </li>
+            <li data-value="cct">
+              <a href="#">CCT</a>
+            </li>
+            <li data-value="rgb_cct" class="active">
+              <a href="#">RGB+CCT</a>
+            </li>
+            <li data-value="rgb">
+              <a href="#">RGB</a>
+            </li>
+            <li data-value="fut089">
+              <a href="#">FUT089 / B8</a>
+            </li>
+            <li data-value="fut091">
+              <a href="#">FUT091 / B2</a>
+            </li>
+            <li data-value="fut020">
+              <a href="#">FUT020</a>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div class="col-sm-4">
@@ -129,41 +170,8 @@
           </div>
         </div>
       </div>
-
-      <div class="col-sm-4">
-        <label for="mode">Remote Type</label>
-        <div class="dropdown">
-          <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-            <label>Mode</label>
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" id="mode">
-            <li data-value="rgbw">
-              <a href="#">RGBW</a>
-            </li>
-            <li data-value="cct">
-              <a href="#">CCT</a>
-            </li>
-            <li data-value="rgb_cct" class="active">
-              <a href="#">RGB+CCT</a>
-            </li>
-            <li data-value="rgb">
-              <a href="#">RGB</a>
-            </li>
-            <li data-value="fut089">
-              <a href="#">FUT089 / B8</a>
-            </li>
-            <li data-value="fut091">
-              <a href="#">FUT091 / B2</a>
-            </li>
-            <li data-value="fut020">
-              <a href="#">FUT020</a>
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
-
+ -->
     <div class="row"><div class="col-sm-12">
       <div class="mode-option" data-for="rgbw,rgb_cct,rgb,fut089,fut020">
         <div class="row">
@@ -283,77 +291,186 @@
         </ul>
       </div>
     </div>
+
   </div>
   
-    <!-- The content of this modal is dynamically injected into the settings modal -->
-    <div id="gateway-servers-modal" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h2 class="modal-title">Gateway Servers</h2>
-          </div>
-          <div class="modal-body">
 
-            <div class="row">
-              <div class="col col-sm-12">
-                <form id="gateway-server-form">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Device ID</th>
-                        <th>UDP Port</th>
-                        <th>Protocol Version</th>
-                        <th>
-                          <a class="btn btn-success gateway-add-btn" id="add-server-btn">
-                            <i class="glyphicon glyphicon-plus"></i>
-                          </a>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody id="gateway-server-configs">
-                    </tbody>
-                  </table>
-                </form>
-              </div>
+  <div id="zones-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h2 class="modal-title">Zone setup</h2>
+        </div>
+        <div class="modal-body">
+
+          <div>&nbsp;</div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <form action="#" id="zones">    
+                <div class="row">
+                  <div class="col-sm-3">
+                    <label for="deviceId" id="device-id-label">
+                      Device Id
+                      <span class="error-info"></span>
+                    </label>
+                    <select id="deviceId" placeholder="Enter hub ID">
+                    </select>
+                  </div>
+            
+                  <div class="col-sm-4">
+                    <label for="mode">Remote Type</label>
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                        <label>Mode</label>
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" id="mode">
+                        <li data-value="rgbw">
+                          <a href="#">RGBW</a>
+                        </li>
+                        <li data-value="cct">
+                          <a href="#">CCT</a>
+                        </li>
+                        <li data-value="rgb_cct" class="active">
+                          <a href="#">RGB+CCT</a>
+                        </li>
+                        <li data-value="rgb">
+                          <a href="#">RGB</a>
+                        </li>
+                        <li data-value="fut089">
+                          <a href="#">FUT089 / B8</a>
+                        </li>
+                        <li data-value="fut091">
+                          <a href="#">FUT091 / B2</a>
+                        </li>
+                        <li data-value="fut020">
+                          <a href="#">FUT020</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+            
+                  <div class="col-sm-4">
+                    <div class="mode-option" id="group-option" data-for="cct,rgbw,rgb_cct,fut089,fut091">
+                      <label for="groupId">Group</label>
+            
+                      <div class="btn-group" id="groupId" data-toggle="buttons">
+                        <label class="btn btn-default active">
+                          <input type="radio" name="options" autocomplete="off" data-value="1" checked> 1
+                        </label>
+                        <label class="btn btn-default">
+                          <input type="radio" name="options" autocomplete="off" data-value="2"> 2
+                        </label>
+                        <label class="btn btn-default">
+                          <input type="radio" name="options" autocomplete="off" data-value="3"> 3
+                        </label>
+                        <label class="btn btn-default">
+                          <input type="radio" name="options" autocomplete="off" data-value="4"> 4
+                        </label>
+                        <label class="btn btn-default mode-option" data-for="fut089">
+                          <input type="radio" name="options" autocomplete="off" data-value="5"> 5
+                        </label>
+                        <label class="btn btn-default mode-option" data-for="fut089">
+                          <input type="radio" name="options" autocomplete="off" data-value="6"> 6
+                        </label>
+                        <label class="btn btn-default mode-option" data-for="fut089">
+                          <input type="radio" name="options" autocomplete="off" data-value="7"> 7
+                        </label>
+                        <label class="btn btn-default mode-option" data-for="fut089">
+                          <input type="radio" name="options" autocomplete="off" data-value="8"> 8
+                        </label>
+                        <label class="btn btn-default">
+                          <input type="radio" name="options" autocomplete="off" data-value="0"> All
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <input type="submit" class="btn btn-success" value="Submit" />
+              </form>        
+              <label for="deviceAliases" id="device-id-aliases">
+                Zone Name
+              </label>
+              <select id="deviceAliases" placeholder="Create zone...">
+              </select>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div>&nbsp;</div>
+  <!-- The content of this modal is dynamically injected into the settings modal -->
+  <div id="gateway-servers-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h2 class="modal-title">Gateway Servers</h2>
+        </div>
+        <div class="modal-body">
 
-    <div id="settings-modal" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h2 class="modal-title">Settings</h2>
-          </div>
-          <div class="modal-body">
-
-            <div>&nbsp;</div>
-
-            <div class="row">
-              <div class="col-sm-12">
-                <form action="#" id="settings">
-                  <input type="submit" class="btn btn-success" value="Submit" />
-                </form>
-              </div>
+          <div class="row">
+            <div class="col col-sm-12">
+              <form id="gateway-server-form">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Device ID</th>
+                      <th>UDP Port</th>
+                      <th>Protocol Version</th>
+                      <th>
+                        <a class="btn btn-success gateway-add-btn" id="add-server-btn">
+                          <i class="glyphicon glyphicon-plus"></i>
+                        </a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="gateway-server-configs">
+                  </tbody>
+                </table>
+              </form>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="alert alert-warning alert-block" id="traffic-sniff">
-      <button type="button" class="close" id="traffic-sniff-close">&times;</button>
-      <h4>Traffic sniffed (sent and received)</h4>
-      <div id="sniffed-traffic"></div>
+  <div>&nbsp;</div>
+
+  <div id="settings-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h2 class="modal-title">Settings</h2>
+        </div>
+        <div class="modal-body">
+
+          <div>&nbsp;</div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <form action="#" id="settings">
+                <input type="submit" class="btn btn-success" value="Submit" />
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="alert alert-warning alert-block" id="traffic-sniff">
+    <button type="button" class="close" id="traffic-sniff-close">&times;</button>
+    <h4>Traffic sniffed (sent and received)</h4>
+    <div id="sniffed-traffic"></div>
   </div>
 
   <div id="update-firmware-modal" class="modal fade" role="dialog">
@@ -534,5 +651,6 @@
 
     </div>
   </div>
+</div>
 </body>
 </html>
